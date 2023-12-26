@@ -13,7 +13,13 @@ import { evaluateOmega, loadRulesInto } from "omega-rules";
 import { RunRuleCommand } from "./deployment/interactions/runrule.js";
 import { fileURLToPath } from "node:url";
 import { createRulecaches } from "./util/providers.js";
-import { runRuleCommand, runruleAutocomplete } from "./functions/runrule.js";
+import {
+  RuleAutocompleteType,
+  runRuleCommand,
+  runruleAutocomplete,
+} from "./functions/runrule.js";
+import { RulesCommand } from "./deployment/interactions/rules.js";
+import { rulesCommand } from "./functions/rules.js";
 
 const token = process.env.DISCORD_TOKEN;
 if (!token) {
@@ -82,14 +88,35 @@ client.on(
 
         await runRuleCommand(client, interaction, rule);
       }
+
+      if (
+        data.name === RulesCommand.name &&
+        data.type === ApplicationCommandType.ChatInput
+      ) {
+        const option = data.options?.find(
+          (option) => option.name === RulesCommand.options[0].name
+        ) as APIApplicationCommandInteractionDataStringOption | undefined;
+
+        if (!option) {
+          return;
+        }
+
+        const rule = rules.user.get(option.value);
+        if (!rule) {
+          return;
+        }
+
+        await rulesCommand(client, interaction, rule);
+      }
     }
+
     if (interaction.type === InteractionType.ApplicationCommandAutocomplete) {
       const data = interaction.data;
       const focused = data.options.find(
         (option) =>
           option.type === ApplicationCommandOptionType.String && option?.focused
       );
-      if (!focused) {
+      if (!focused || focused.type !== ApplicationCommandOptionType.String) {
         return;
       }
 
@@ -97,7 +124,35 @@ client.on(
         data.name === RunRuleCommand.name &&
         focused.name === RunRuleCommand.options[0].name
       ) {
-        await runruleAutocomplete(client, interaction);
+        return await runruleAutocomplete(
+          client,
+          interaction,
+          focused.value,
+          RuleAutocompleteType.User
+        );
+      }
+
+      if (
+        data.name === RulesCommand.name &&
+        focused.name === RulesCommand.options[0].name
+      ) {
+        const ruleTypeOption = data.options.find(
+          (option) =>
+            option.type === ApplicationCommandOptionType.String &&
+            option.name === RulesCommand.options[1].name
+        ) as APIApplicationCommandInteractionDataStringOption | undefined;
+
+        const ruleType =
+          ruleTypeOption?.value === "message"
+            ? RuleAutocompleteType.Message
+            : RuleAutocompleteType.User;
+
+        return await runruleAutocomplete(
+          client,
+          interaction,
+          focused.value,
+          ruleType
+        );
       }
     }
   }

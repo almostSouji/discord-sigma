@@ -13,20 +13,72 @@ import type Client from "../client.js";
 import { container } from "tsyringe";
 import { kOmega } from "../tokens.js";
 import type { DiscordRule, RuleCaches } from "../types.js";
-import { evaluateOmega } from "omega-rules";
+import { evaluateOmega, type Rule } from "omega-rules";
 import { ruleToDiscordEmbed } from "../util/ruleformatting.js";
 import { colorBasedOnDifference } from "../util/ansicolors.js";
 import { timestampFromSnowflake } from "../util/snowflakes.js";
 import { ms } from "@naval-base/ms";
 import kleur from "kleur";
+import { truncate } from "@yuudachi/framework";
 
 kleur.enabled = true;
 
+function ruleLabel(rule: Rule) {
+  const parts = [rule.title];
+  if (rule.description) {
+    parts.push(rule.description.replaceAll("\n", " "));
+  }
+  return truncate(parts.join(": "), 100);
+}
+
+export enum RuleAutocompleteType {
+  User,
+  Message,
+}
+
 export async function runruleAutocomplete(
   client: Client,
-  interaction: APIApplicationCommandAutocompleteInteraction
+  interaction: APIApplicationCommandAutocompleteInteraction,
+  query: string,
+  type: RuleAutocompleteType
 ) {
   const rules = container.resolve<RuleCaches>(kOmega);
+
+  const exactMatches = [];
+  const includesMatches = [];
+  const descriptionMatches = [];
+  const rest: [string, Rule][] = [];
+
+  const lowerQuery = query.toLowerCase();
+
+  const cache = type === RuleAutocompleteType.User ? rules.user : rules.message;
+
+  for (const [key, rule] of cache) {
+    const lowerRuleTitle = rule.title.toLowerCase();
+    const lowerKey = key.toLowerCase();
+    if (lowerRuleTitle === lowerQuery || lowerKey === lowerQuery) {
+      exactMatches.push([key, rule]);
+      continue;
+    }
+    if (lowerRuleTitle.includes(lowerQuery) || lowerKey.includes(lowerQuery)) {
+      includesMatches.push([key, rule]);
+      continue;
+    }
+
+    if (rule.description?.toLowerCase().includes(lowerQuery)) {
+      descriptionMatches.push([key, rule]);
+      continue;
+    }
+
+    rest.push([key, rule]);
+  }
+
+  const result = [
+    ...exactMatches,
+    ...includesMatches,
+    ...descriptionMatches,
+    ...rest,
+  ].slice(0, 25) as [string, Rule][];
 
   await client.rest.post(
     `/interactions/${interaction.id}/${interaction.token}/callback`,
@@ -34,9 +86,9 @@ export async function runruleAutocomplete(
       body: {
         type: InteractionResponseType.ApplicationCommandAutocompleteResult,
         data: {
-          choices: [...rules.user.entries()].map(([key, rule]) => ({
+          choices: result.map(([key, rule]) => ({
             value: key,
-            name: `▶ ${rule.title}`,
+            name: ruleLabel(rule),
           })),
         },
       },
