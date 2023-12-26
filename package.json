@@ -1,12 +1,9 @@
 {
-    "name": "discord-sigma",
+    "name": "discordsigma",
     "version": "0.0.0",
     "description": "A POC bot evaluating sigma rules against discord structures",
-    "contributors": [
-        "Souji <timoqueezle@gmail.com>"
-    ],
-    "license": "NO_LICENSE",
-    "private": true,
+    "author": "Souji <timoqueezle@gmail.com>",
+    "license": "MIT",
     "type": "module",
     "scripts": {
         "build:clean": "del-cli dist",
@@ -17,16 +14,20 @@
         "format": "prettier --write . && eslint src --ext ts --fix",
         "fmt": "yarn format",
         "start": "env-cmd node --enable-source-maps dist/index.js",
-        "start:dev": "npm run build && npm run dev",
         "dev": "env-cmd node --enable-source-maps dist/index.js",
-        "test": "yarn build && env-cmd node --enable-source-maps --test",
-        "test:only": "yarn test --test-only"
+        "start:dev": "npm run build && npm run dev",
+        "deploy:commands": "env-cmd node --enable-source-maps dist/deployment/deploy.js"
     },
     "dependencies": {
         "@discordjs/core": "^1.1.1",
+        "@naval-base/ms": "^3.1.0",
+        "@yuudachi/framework": "^0.3.5",
         "env-cmd": "^10.1.0",
-        "reflect-metadata": "^0.1.14",
-        "tsyringe": "^4.8.0"
+        "kleur": "^4.1.5",
+        "omega-rules": "^0.1.0",
+        "reflect-metadata": "^0.2.1",
+        "tsyringe": "^4.8.0",
+        "yaml": "^2.3.4"
     },
     "devDependencies": {
         "@commitlint/cli": "^18.4.3",
