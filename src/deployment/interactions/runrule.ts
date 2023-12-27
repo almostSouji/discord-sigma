@@ -16,5 +16,11 @@ export const RunRuleCommand = {
       description: "Browse and select rules",
       required: true,
     },
+
+    {
+      type: ApplicationCommandOptionType.Boolean,
+      name: "hide",
+      description: "Hide the output (default: True)",
+    },
   ],
 } as const;

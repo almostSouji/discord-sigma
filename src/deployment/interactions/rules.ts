@@ -25,5 +25,10 @@ export const RulesCommand = {
         { name: "Message", value: "message" },
       ],
     },
+    {
+      type: ApplicationCommandOptionType.Boolean,
+      name: "hide",
+      description: "Hide the output (default: True)",
+    },
   ],
 } as const;

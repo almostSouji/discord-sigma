@@ -9,10 +9,11 @@ import { ruleToDiscordEmbed } from "../util/ruleformatting.js";
 export async function rulesCommand(
   client: Client,
   interaction: APIApplicationCommandInteraction,
-  rule: DiscordRule
+  rule: DiscordRule,
+  hide: boolean
 ) {
   await client.api.interactions.reply(interaction.id, interaction.token, {
-    flags: MessageFlags.Ephemeral,
+    flags: hide ? MessageFlags.Ephemeral : undefined,
     embeds: [ruleToDiscordEmbed(rule)],
   });
 }

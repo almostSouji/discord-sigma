@@ -6,6 +6,7 @@ import {
   GatewayIntentBits,
   InteractionType,
   type APIApplicationCommandInteractionDataStringOption,
+  type APIApplicationCommandInteractionDataBooleanOption,
 } from "@discordjs/core";
 import process from "process";
 import { default as Client } from "./client.js";
@@ -65,48 +66,47 @@ client.on(GatewayDispatchEvents.MessageCreate, ({ data: message }) => {
 client.on(
   GatewayDispatchEvents.InteractionCreate,
   async ({ data: interaction }) => {
-    // console.log("(▶) Received interaction.");
-    // console.dir(interaction, { depth: null });
     if (interaction.type === InteractionType.ApplicationCommand) {
       const data = interaction.data;
-      if (
-        data.name === RunRuleCommand.name &&
-        data.type === ApplicationCommandType.ChatInput
-      ) {
-        const option = data.options?.find(
-          (option) => option.name == RunRuleCommand.options[0].name
-        ) as APIApplicationCommandInteractionDataStringOption | undefined;
+      if (data.type === ApplicationCommandType.ChatInput) {
+        const hideOption = data.options?.find(
+          (option) => option.name === "hide"
+        ) as APIApplicationCommandInteractionDataBooleanOption | undefined;
+        const hide = hideOption?.value ?? true;
 
-        if (!option) {
-          return;
+        if (data.name === RunRuleCommand.name) {
+          const option = data.options?.find(
+            (option) => option.name == RunRuleCommand.options[0].name
+          ) as APIApplicationCommandInteractionDataStringOption | undefined;
+
+          if (!option) {
+            return;
+          }
+
+          const rule = rules.user.get(option.value);
+          if (!rule) {
+            return;
+          }
+
+          await runRuleCommand(client, interaction, rule, hide);
         }
 
-        const rule = rules.user.get(option.value);
-        if (!rule) {
-          return;
+        if (data.name === RulesCommand.name) {
+          const option = data.options?.find(
+            (option) => option.name === RulesCommand.options[0].name
+          ) as APIApplicationCommandInteractionDataStringOption | undefined;
+
+          if (!option) {
+            return;
+          }
+
+          const rule = rules.user.get(option.value);
+          if (!rule) {
+            return;
+          }
+
+          await rulesCommand(client, interaction, rule, hide);
         }
-
-        await runRuleCommand(client, interaction, rule);
-      }
-
-      if (
-        data.name === RulesCommand.name &&
-        data.type === ApplicationCommandType.ChatInput
-      ) {
-        const option = data.options?.find(
-          (option) => option.name === RulesCommand.options[0].name
-        ) as APIApplicationCommandInteractionDataStringOption | undefined;
-
-        if (!option) {
-          return;
-        }
-
-        const rule = rules.user.get(option.value);
-        if (!rule) {
-          return;
-        }
-
-        await rulesCommand(client, interaction, rule);
       }
     }
 

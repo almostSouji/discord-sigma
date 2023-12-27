@@ -150,14 +150,15 @@ function evaluateSweep(map: Map<string, APIGuildMember>) {
 export async function runRuleCommand(
   client: Client,
   interaction: APIApplicationCommandInteraction,
-  rule: DiscordRule
+  rule: DiscordRule,
+  hide: boolean
 ) {
   if (!interaction.guild_id) {
     return;
   }
 
   await client.api.interactions.defer(interaction.id, interaction.token, {
-    flags: MessageFlags.Ephemeral,
+    flags: hide ? MessageFlags.Ephemeral : undefined,
   });
 
   const matches = new Map<string, APIGuildMember>();
