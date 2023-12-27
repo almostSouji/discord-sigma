@@ -34,10 +34,13 @@ export function ruleToDiscordEmbed(rule: DiscordRule): APIEmbed {
   }
 
   const detectionYaml = stringify(rule.detection);
+  const tlpRed = rule.tags?.some((tag) => /^tlp[:\.]red$/i.exec(tag));
 
   fields.push({
     name: "Detection",
-    value: `\`\`\`yml\n${detectionYaml}\n\`\`\``,
+    value: tlpRed
+      ? "*Detection Logic redacted: [`tlp.red`](<https://www.first.org/tlp/>)*"
+      : `\`\`\`yml\n${detectionYaml}\n\`\`\``,
   });
 
   if (rule.level) {
