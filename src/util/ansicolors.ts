@@ -33,7 +33,7 @@ export function colorBasedOnDeterminant<T>(
 }
 
 /**
- * Color a string based on timestamp difference. red: \< 2 weeks, yellow: \< 4 weeks, green \> 1 year
+ * Color a string based on timestamp difference. red: \< 1 week, yellow: \< 4 weeks
  *
  * @param diff - The  difference to determine color by
  * @param colorString - The string to color
@@ -43,15 +43,11 @@ export function colorBasedOnDifference(diff: number, colorString: string) {
   return colorBasedOnDeterminant<number>(diff, () => colorString, [
     {
       color: kleur.red,
-      predicate: () => diff < 1_000 * 60 * 60 * 24 * 7 * 2,
+      predicate: () => diff < 1_000 * 60 * 60 * 24 * 7 * 1,
     },
     {
       color: kleur.yellow,
       predicate: () => diff < 1_000 * 60 * 60 * 24 * 7 * 4,
-    },
-    {
-      color: kleur.green,
-      predicate: () => diff > 1_000 * 60 * 60 * 24 * 7 * 4 * 24,
     },
   ]);
 }

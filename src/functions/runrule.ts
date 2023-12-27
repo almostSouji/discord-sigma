@@ -121,6 +121,7 @@ function evaluateSweep(map: Map<string, APIGuildMember>) {
 
     const joined = new Date(member.joined_at);
     const created = new Date(timestampFromSnowflake(member.user.id));
+    const delta = joined.getTime() - created.getTime();
 
     creationLower = Math.min(created.getTime(), creationLower);
     creationUpper = Math.max(created.getTime(), creationUpper);
@@ -133,9 +134,9 @@ function evaluateSweep(map: Map<string, APIGuildMember>) {
       )}  ${member.user.id.padEnd(20, " ")} c: ${colorBasedOnDifference(
         now - created.getTime(),
         created.toLocaleString("en-GB")
-      )} j: ${colorBasedOnDifference(
-        joined.getTime() - created.getTime(),
-        joined.toLocaleString("en-GB")
+      )} j: ${joined.toLocaleString("en-GB")}  ${colorBasedOnDifference(
+        delta,
+        `Δ: ${ms(delta).padEnd(5, " ")}`
       )} u: ${member.user.username} g: ${member.user.global_name ?? "-"}`
     );
   }
