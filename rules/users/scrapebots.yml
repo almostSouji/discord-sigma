@@ -1,13 +1,16 @@
 title: Data scrape bots
 description: >-
-  This rule detects Discord user bot accounts based on a commonly observed name pattern.
-  These bots usually sit in the server doing nothing overly suspicious.
-  It is assumed that they scrape events and members silently.
-level: medium
+  This rule detects users that are very freshly created or are forcefully transferred into the new username System.
+  While this can act as an indicator of a spam account or scrape bot (which sits in a server without interacting with it, collecting data),
+  other indicators should be present and considered.
+  Usually, users will change their username from the default, if they are legitimate accounts with an interest of using the server.
+level: low
 status: experimental
 discord: user
 id: cb225383-7d9f-4ae9-b6ad-7e2514825b2f
 date: 2023/12/26
+falsepositives:
+  - This format is picked for freshly created accounts and accounts forced into the new system.
 detection:
   namepattern:
     - username|re: ^.*_\d{5,7}$

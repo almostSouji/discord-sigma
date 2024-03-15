@@ -1,0 +1,15 @@
+title: Captcha bypass
+description: >-
+  This rule detects users that renamed to suggest that they were used to bypass the Discord native captcha system.
+  These specific patterns are not otherwise seen in benign users
+level: low
+status: stable
+discord: user
+id: 6a66398c-0b7f-434b-955c-498a33edda18
+date: 2024/03/16
+detection:
+  namepattern:
+    - username: captchabypassed
+    - username|re: ^nicecaptchadi5cord\d{4}$
+    - username|re: ^captchabypassed\d{4}$
+  condition: namepattern
