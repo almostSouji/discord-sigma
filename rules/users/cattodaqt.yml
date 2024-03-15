@@ -1,0 +1,13 @@
+title: Catto Da Qt
+description: >-
+  This rule detects a set of accounts used by a threat actor calling themselves catto da qt.
+  Accounts of this nature have been observed in official Discord servers, joining into the server with high phases of dormancy before renaming to more generic random strings.
+level: low
+status: stable
+discord: user
+id: 3b05a67e-023f-4b45-9bea-10ce7fb7e265
+date: 2023/12/26
+detection:
+  namepattern:
+    - username|contains: catto?da?qt
+  condition: namepattern
