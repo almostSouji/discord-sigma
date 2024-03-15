@@ -191,14 +191,17 @@ export async function runRuleCommand(
 
       const { formatted, creationRange, joinRange } = evaluateSweep(matches);
 
-      const creationRangeString = ms(creationRange[1] - creationRange[0], true);
-      const joinRangeString = ms(joinRange[1] - creationRange[0], true);
-
       const resultSummaryParts = [
         `* Rule matches **${matches.size}** out of ${processed} guild members`,
       ];
 
       if (formatted.length > 1) {
+        const creationRangeString = ms(
+          creationRange[1] - creationRange[0],
+          true
+        );
+        const joinRangeString = ms(joinRange[1] - creationRange[0], true);
+
         resultSummaryParts.push(
           `* Matching members **created** within **${creationRangeString}**`,
           `* Matching members **joined** within **${joinRangeString}**`
