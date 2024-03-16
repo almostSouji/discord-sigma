@@ -1,0 +1,14 @@
+title: Motion bots
+description: >-
+  This rule detects spam bots employed by the gg/motion community.
+  The community is for threat actors and low profile cyber criminals to exchange methods and facilitate the sale of stolen credentials, online currencies, and premium services.
+  Most of their activity seems to be powered by fraudulent activity. 
+level: low
+status: stable
+discord: user
+id: 2b1f205c-9375-4fe2-9830-8b89c4f30d16
+date: 2024/03/16
+detection:
+  namepattern:
+    - username|contains: gg?motion
+  condition: namepattern
