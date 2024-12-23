@@ -149,7 +149,7 @@ function webhookLogMessage(header: string, rules: Rule[], guildId: string) {
             return inlineCode(rule.title);
           }),
         subtext(
-          "🛈 You can find out more about a rule by running </rules:1189350245176447007> with a part of the command name or UUID"
+          "🛈 You can find out more about a rule by running </rules:1189350245176447007> with a part of the rule title or UUID"
         ),
       ].join("\n"),
       DISCORD_MAX_MESSAGE_LENGTH,
