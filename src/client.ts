@@ -1,6 +1,7 @@
 import { Client, GatewayIntentBits } from "@discordjs/core";
 import { REST } from "@discordjs/rest";
 import { WebSocketManager, WebSocketShardEvents } from "@discordjs/ws";
+import { logger } from "@yuudachi/framework";
 
 export type Options = {
   debug?: boolean;
@@ -22,7 +23,7 @@ export default class extends Client {
 
     if (options?.debug) {
       gateway.on(WebSocketShardEvents.Debug, (message) => {
-        console.log(message);
+        logger.debug(message);
       });
     }
 

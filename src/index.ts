@@ -31,6 +31,12 @@ import {
   unorderedList,
   userMention,
 } from "@discordjs/formatters";
+import { logger } from "./util/logger.js";
+
+if (process.env.ENVIRONMENT === "debug") {
+  logger.level = "debug";
+  logger.debug("=== DEBUG LOGGING ENBALED ===");
+}
 
 const token = process.env.DISCORD_TOKEN;
 if (!token) {
@@ -59,9 +65,9 @@ const client = new Client(
 );
 
 client.once(GatewayDispatchEvents.Ready, () => {
-  console.log("Client is ready.");
-  console.log(`Loaded ${rules.user.size} user rules`);
-  console.log(`Loaded ${rules.message.size} message rules`);
+  logger.info("Client is ready");
+  logger.info(`Loaded ${rules.user.size} user rules`);
+  logger.info(`Loaded ${rules.message.size} message rules`);
 });
 
 function evaluateUser(user: APIUser, guildId: string): Rule[] {
