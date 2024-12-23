@@ -4,7 +4,7 @@ description: >-
   While this can act as an indicator of a spam account or scrape bot (which sits in a server without interacting with it, collecting data),
   other indicators should be present and considered.
   Usually, users will change their username from the default, if they are legitimate accounts with an interest of using the server.
-level: low
+level: informational
 status: experimental
 discord: user
 id: cb225383-7d9f-4ae9-b6ad-7e2514825b2f

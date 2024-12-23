@@ -1,0 +1,13 @@
+title: Unknown bots (common name)
+description: >-
+  This rule detects a recent surge in bots of unknown purpose. They seem to generally invite themselves, if given the permission to do so.
+  So far there is no known impact, apart from some accounts being flagged by discord for excessive DM activity (indication of what those DMs are pending)
+level: low
+status: experimental
+discord: user
+id: 3992dd33-ce88-4a68-893a-c00689c3a431
+date: 2024/05/15
+detection:
+  namepattern:
+    - username|re: ^staypositive_\w\d{2,4}$
+  condition: namepattern

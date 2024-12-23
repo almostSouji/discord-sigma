@@ -11,7 +11,11 @@ id: a05ee070-72a8-47d1-81a0-0cd164e98b47
 date: 2024/04/21
 detection:
   namepattern:
-    username|re: ^\D\d{3}\._\.$
+    username|re:
+      - ^\D*\d{3}\._\.$
+      - ^\._\D*\d{3}\.$
+      - ^\.\D*\d{3}_\.$
+      - ^\._\.\D*\d{3}_$
     id|snowflake(discord)|sameday: 2024/01/07
   scrapers:
     id:
