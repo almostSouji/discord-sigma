@@ -3,13 +3,13 @@ import {
   type APIApplicationCommandInteraction,
   MessageFlags,
 } from "@discordjs/core";
-import type { DiscordRule } from "../types.js";
 import { ruleToDiscordEmbed } from "../util/ruleformatting.js";
+import type { Rule } from "omega-rules";
 
 export async function rulesCommand(
   client: Client,
   interaction: APIApplicationCommandInteraction,
-  rule: DiscordRule,
+  rule: Rule,
   hide: boolean
 ) {
   await client.api.interactions.reply(interaction.id, interaction.token, {

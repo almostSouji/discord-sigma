@@ -11,8 +11,6 @@ import {
 } from "@discordjs/core";
 import type Client from "../client.js";
 import { container } from "tsyringe";
-import { kOmega } from "../tokens.js";
-import type { DiscordRule, RuleCaches } from "../types.js";
 import { evaluateOmega, type Rule } from "omega-rules";
 import { ruleToDiscordEmbed } from "../util/ruleformatting.js";
 import { colorBasedOnDifference } from "../util/ansicolors.js";
@@ -20,6 +18,8 @@ import { timestampFromSnowflake } from "../util/snowflakes.js";
 import { ms } from "@naval-base/ms";
 import kleur from "kleur";
 import { truncate } from "@yuudachi/framework";
+import { kOmega } from "../util/symbols.js";
+import type { OmegaRuleCache } from "../util/rulemanager.js";
 
 kleur.enabled = true;
 
@@ -42,7 +42,7 @@ export async function runruleAutocomplete(
   query: string,
   type: RuleAutocompleteType
 ) {
-  const rules = container.resolve<RuleCaches>(kOmega);
+  const rules = container.resolve<OmegaRuleCache>(kOmega);
 
   const exactMatches = [];
   const includesMatches = [];
@@ -151,7 +151,7 @@ function evaluateSweep(map: Map<string, APIGuildMember>) {
 export async function runRuleCommand(
   client: Client,
   interaction: APIApplicationCommandInteraction,
-  rule: DiscordRule,
+  rule: Rule,
   hide: boolean
 ) {
   if (!interaction.guild_id) {

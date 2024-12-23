@@ -16,7 +16,7 @@ import { default as Client } from "./client.js";
 import { evaluateOmega, loadRulesInto, type Rule } from "omega-rules";
 import { RunRuleCommand } from "./deployment/interactions/runrule.js";
 import { fileURLToPath } from "node:url";
-import { createRulecaches, createUserFlagCaches } from "./util/providers.js";
+import { createUserFlagCaches } from "./util/miscproviders.js";
 import {
   RuleAutocompleteType,
   runRuleCommand,
@@ -32,8 +32,15 @@ import {
   userMention,
 } from "@discordjs/formatters";
 import { logger } from "./util/logger.js";
+import {
+  createOmega,
+  createOmegaWatcher,
+  loadOmegaRule,
+  unloadOmegaRule,
+} from "./util/rulemanager.js";
 
-if (process.env.ENVIRONMENT === "debug") {
+const isDebugEnv = process.env.ENVIRONMENT === "debug";
+if (isDebugEnv) {
   logger.level = "debug";
   logger.debug("=== DEBUG LOGGING ENBALED ===");
 }
@@ -43,14 +50,15 @@ if (!token) {
   process.exit(1);
 }
 
-const rules = createRulecaches();
+const rules = createOmega();
+const omegaWatcher = createOmegaWatcher();
 
 await loadRulesInto(
-  fileURLToPath(new URL("../rules/messages/", import.meta.url)),
+  fileURLToPath(new URL("../rules/message/", import.meta.url)),
   rules.message
 );
 await loadRulesInto(
-  fileURLToPath(new URL("../rules/users/", import.meta.url)),
+  fileURLToPath(new URL("../rules/user/", import.meta.url)),
   rules.user
 );
 
@@ -61,7 +69,10 @@ const client = new Client(
   GatewayIntentBits.Guilds |
     GatewayIntentBits.GuildMessages |
     GatewayIntentBits.MessageContent |
-    GatewayIntentBits.GuildMembers
+    GatewayIntentBits.GuildMembers,
+  {
+    debug: isDebugEnv,
+  }
 );
 
 client.once(GatewayDispatchEvents.Ready, () => {
@@ -274,5 +285,49 @@ client.on(
     }
   }
 );
+
+omegaWatcher.on("create", async (path) => {
+  try {
+    const success = await loadOmegaRule(path, { throwOnInvalid: true }).catch(
+      () => false
+    );
+    logger.info({ success, message: `[+] Loaded omega rule ${path}` });
+  } catch (error_) {
+    const error = error_ as Error;
+    logger.error(error, error.message);
+  }
+});
+
+omegaWatcher.on("change", async (path) => {
+  try {
+    const success = await loadOmegaRule(path, { throwOnInvalid: true }).catch(
+      () => false
+    );
+
+    if (success) {
+      logger.info({ success, message: `[~] Loaded omega rule ${path}` });
+      return;
+    }
+
+    const unloadSuccess = unloadOmegaRule(path);
+    logger.info({
+      success: unloadSuccess,
+      message: `[-] Unloaded omega rule ${path}`,
+    });
+  } catch (error_) {
+    const error = error_ as Error;
+    logger.error(error, error.message);
+  }
+});
+
+omegaWatcher.on("unlink", (path) => {
+  try {
+    const success = unloadOmegaRule(path);
+    logger.info({ success, message: `[-] Unloaded omega rule ${path}` });
+  } catch (error_) {
+    const error = error_ as Error;
+    logger.error(error, error.message);
+  }
+});
 
 client.ws.connect();
