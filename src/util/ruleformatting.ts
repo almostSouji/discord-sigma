@@ -1,6 +1,6 @@
 import type { APIEmbed, APIEmbedField } from "@discordjs/core";
 import type { DiscordRule } from "../types.js";
-import { truncateEmbed } from "@yuudachi/framework";
+import { truncate, truncateEmbed } from "@yuudachi/framework";
 import type { RuleLevel } from "omega-rules";
 import { Colors } from "./constants.js";
 import { stringify } from "yaml";
@@ -40,7 +40,7 @@ export function ruleToDiscordEmbed(rule: DiscordRule): APIEmbed {
     name: "Detection",
     value: tlpRed
       ? "*Detection Logic redacted: [`tlp.red`](<https://www.first.org/tlp/>)*"
-      : `\`\`\`yml\n${detectionYaml}\n\`\`\``,
+      : `\`\`\`yml\n${truncate(detectionYaml, 1012, "\n")}\n\`\`\``,
   });
 
   if (rule.level) {

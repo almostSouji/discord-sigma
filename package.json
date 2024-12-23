@@ -8,7 +8,7 @@
     "scripts": {
         "build:clean": "del-cli dist",
         "build:check": "tsc --noEmit",
-        "build:esm": "swc ./src --out-dir ./dist",
+        "build:esm": "swc ./src --out-dir ./dist --strip-leading-paths",
         "build": "yarn build:clean && yarn build:check && yarn build:esm",
         "lint": "prettier --check . && eslint src --ext ts",
         "format": "prettier --write . && eslint src --ext ts --fix",
@@ -19,30 +19,34 @@
         "deploy:commands": "env-cmd node --enable-source-maps dist/deployment/deploy.js"
     },
     "dependencies": {
-        "@discordjs/core": "^1.1.1",
+        "@discordjs/core": "^2.0.0",
+        "@discordjs/formatters": "^0.5.0",
+        "@discordjs/rest": "^2.4.0",
+        "@discordjs/ws": "^2.0.0",
         "@naval-base/ms": "^3.1.0",
         "@yuudachi/framework": "^0.3.5",
         "env-cmd": "^10.1.0",
         "kleur": "^4.1.5",
-        "omega-rules": "^0.1.0",
-        "reflect-metadata": "^0.2.1",
+        "omega-rules": "^0.4.3",
+        "reflect-metadata": "^0.2.2",
         "tsyringe": "^4.8.0",
-        "yaml": "^2.3.4"
+        "yaml": "^2.6.1"
     },
     "devDependencies": {
-        "@commitlint/cli": "^18.4.3",
-        "@commitlint/config-angular": "^18.4.3",
-        "@swc/cli": "^0.1.63",
-        "@swc/core": "^1.3.100",
-        "@swc/helpers": "^0.5.3",
-        "@types/node": "^20.10.4",
-        "del-cli": "^5.1.0",
-        "eslint": "^8.55.0",
+        "@commitlint/cli": "^19.6.1",
+        "@commitlint/config-angular": "^19.6.0",
+        "@swc/cli": "^0.5.2",
+        "@swc/core": "^1.10.1",
+        "@swc/helpers": "^0.5.15",
+        "@types/node": "^22.10.2",
+        "@typescript-eslint/parser": "^8.18.2",
+        "del-cli": "^6.0.0",
+        "eslint": "^8.56.0",
         "eslint-config-neon": "0.1.35",
-        "husky": "^8.0.3",
-        "prettier": "^3.1.1",
-        "rimraf": "^5.0.5",
-        "typescript": "^5.3.3"
+        "husky": "^9.1.7",
+        "prettier": "^3.4.2",
+        "rimraf": "^6.0.1",
+        "typescript": "^5.7.2"
     },
-    "packageManager": "yarn@4.0.2"
+    "packageManager": "yarn@4.5.3"
 }

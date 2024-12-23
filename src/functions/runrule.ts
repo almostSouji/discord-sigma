@@ -5,9 +5,9 @@ import {
   GatewayOpcodes,
   GatewayDispatchEvents,
   type APIGuildMember,
-  type WithIntrinsicProps,
   type GatewayGuildMembersChunkDispatchData,
   MessageFlags,
+  type ToEventProps,
 } from "@discordjs/core";
 import type Client from "../client.js";
 import { container } from "tsyringe";
@@ -167,7 +167,7 @@ export async function runRuleCommand(
 
   const processChunks = async ({
     data,
-  }: WithIntrinsicProps<GatewayGuildMembersChunkDispatchData>) => {
+  }: ToEventProps<GatewayGuildMembersChunkDispatchData>) => {
     if (data.guild_id !== interaction.guild_id) {
       return;
     }
