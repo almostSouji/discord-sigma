@@ -28,7 +28,7 @@ import {
   hyperlink,
   inlineCode,
   messageLink,
-  unorderedList,
+  subtext,
   userMention,
 } from "@discordjs/formatters";
 import { logger } from "./util/logger.js";
@@ -38,6 +38,12 @@ import {
   loadOmegaRule,
   unloadOmegaRule,
 } from "./util/rulemanager.js";
+import {
+  resolveRuleEmoji,
+  resolveRuleSeverityNumber,
+} from "./util/ruleformatting.js";
+import { truncate } from "@yuudachi/framework";
+import { DISCORD_MAX_MESSAGE_LENGTH } from "./util/constants.js";
 
 const isDebugEnv = process.env.ENVIRONMENT === "debug";
 if (isDebugEnv) {
@@ -125,17 +131,30 @@ function webhookLogMessage(header: string, rules: Rule[], guildId: string) {
   if (!id || !token) return;
 
   client.api.webhooks.execute(id, token, {
-    content: [
-      header,
-      unorderedList(
-        rules.map((rule) => {
-          if (rule.id) {
-            return `${inlineCode(rule.title)} (${inlineCode(rule.id)})`;
-          }
-          return inlineCode(rule.title);
-        })
-      ),
-    ].join("\n"),
+    content: truncate(
+      [
+        `${header}:`,
+        ...rules
+          .sort(
+            (one, other) =>
+              resolveRuleSeverityNumber(other.level) -
+              resolveRuleSeverityNumber(one.level)
+          )
+          .map((rule) => {
+            if (rule.id) {
+              return `${inlineCode(resolveRuleEmoji(rule.level))} ${inlineCode(
+                rule.title
+              )} (${inlineCode(rule.id)})`;
+            }
+            return inlineCode(rule.title);
+          }),
+        subtext(
+          "🛈 You can find out more about a rule by running </rules:1189350245176447007> with a part of the command name or UUID"
+        ),
+      ].join("\n"),
+      DISCORD_MAX_MESSAGE_LENGTH,
+      "\n"
+    ),
     flags: MessageFlags.SuppressEmbeds,
     allowed_mentions: { parse: [] },
   });
@@ -143,9 +162,9 @@ function webhookLogMessage(header: string, rules: Rule[], guildId: string) {
 
 function logUser(user: APIUser, rules: Rule[], guildId: string, event: string) {
   webhookLogMessage(
-    `User ${userMention(user.id)} triggered configured rules on ${inlineCode(
-      event
-    )}`,
+    `User ${userMention(user.id)} ${inlineCode(user.username)} (${
+      user.id
+    }) triggered configured rules on ${inlineCode(event)}`,
     rules,
     guildId
   );
@@ -162,7 +181,9 @@ client.on(GatewayDispatchEvents.MessageCreate, ({ data: message }) => {
     webhookLogMessage(
       `A ${hyperlink("message", link)} by author ${userMention(
         message.author.id
-      )} triggered configured rules on ${inlineCode("message_create")}:`,
+      )} ${inlineCode(message.author.username)} (${
+        message.author.id
+      }) triggered configured rules on ${inlineCode("message_create")}:`,
       messageHits,
       message.guild_id
     );

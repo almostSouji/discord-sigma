@@ -20,6 +20,26 @@ function resolveRuleColor(level: RuleLevel = "informational") {
   }
 }
 
+export function resolveRuleEmoji(level: RuleLevel = "informational") {
+  switch (level) {
+    case "low":
+      return "🟢";
+    case "medium":
+      return "🟡";
+    case "high":
+      return "🟠";
+    case "critical":
+      return "🔴";
+    case "informational":
+    default:
+      return "🔵";
+  }
+}
+
+export function resolveRuleSeverityNumber(level: RuleLevel = "informational") {
+  return ["informational", "low", "medium", "high", "critical"].indexOf(level);
+}
+
 export function ruleToDiscordEmbed(rule: Rule): APIEmbed {
   const embed = {
     title: rule.title,

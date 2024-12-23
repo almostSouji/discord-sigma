@@ -56,11 +56,19 @@ export async function runruleAutocomplete(
   for (const [key, rule] of cache) {
     const lowerRuleTitle = rule.title.toLowerCase();
     const lowerKey = key.toLowerCase();
-    if (lowerRuleTitle === lowerQuery || lowerKey === lowerQuery) {
+    if (
+      lowerRuleTitle === lowerQuery ||
+      lowerKey === lowerQuery ||
+      rule.id === lowerQuery
+    ) {
       exactMatches.push([key, rule]);
       continue;
     }
-    if (lowerRuleTitle.includes(lowerQuery) || lowerKey.includes(lowerQuery)) {
+    if (
+      lowerRuleTitle.includes(lowerQuery) ||
+      lowerKey.includes(lowerQuery) ||
+      rule.id?.includes(lowerQuery)
+    ) {
       includesMatches.push([key, rule]);
       continue;
     }
@@ -73,12 +81,17 @@ export async function runruleAutocomplete(
     rest.push([key, rule]);
   }
 
-  const result = [
-    ...exactMatches,
-    ...includesMatches,
-    ...descriptionMatches,
-    ...rest,
-  ].slice(0, 25) as [string, Rule][];
+  const result = [];
+
+  if (exactMatches.length) {
+    result.push(...exactMatches);
+  }
+
+  if (includesMatches.length) {
+    result.push(...includesMatches);
+  }
+
+  const cappedResult = result.slice(0, 25) as [string, Rule][];
 
   await client.rest.post(
     `/interactions/${interaction.id}/${interaction.token}/callback`,
@@ -86,7 +99,7 @@ export async function runruleAutocomplete(
       body: {
         type: InteractionResponseType.ApplicationCommandAutocompleteResult,
         data: {
-          choices: result.map(([key, rule]) => ({
+          choices: cappedResult.map(([key, rule]) => ({
             value: key,
             name: ruleLabel(rule),
           })),

@@ -6,3 +6,5 @@ export enum Colors {
   DiscordBlurple = 0x5865f2,
   Omega = 0xf5ba6f,
 }
+
+export const DISCORD_MAX_MESSAGE_LENGTH = 4000 as const;
