@@ -73,7 +73,7 @@ function evaluateUser(user: APIUser, guildId: string): Rule[] {
   const hits = [];
   for (const rule of rules.user.values()) {
     const result = evaluateOmega(user, rule);
-    if (result.matches) {
+    if (result.matches && result.rule.level !== "informational") {
       hits.push(rule);
     }
   }
@@ -93,7 +93,7 @@ function evaluateMessage(message: APIMessage): Rule[] {
   const hits = [];
   for (const rule of rules.message.values()) {
     const result = evaluateOmega(message, rule);
-    if (result.matches) {
+    if (result.matches && result.rule.level !== "informational") {
       hits.push(rule);
     }
   }
