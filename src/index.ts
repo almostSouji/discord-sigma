@@ -183,7 +183,7 @@ client.on(GatewayDispatchEvents.MessageCreate, ({ data: message }) => {
         message.author.id
       )} ${inlineCode(message.author.username)} (${
         message.author.id
-      }) triggered configured rules on ${inlineCode("message_create")}`,
+      }) triggered configured rules on ${inlineCode("message_create")}:`,
       messageHits,
       message.guild_id
     );
@@ -241,15 +241,28 @@ client.on(
         }
 
         if (data.name === RulesCommand.name) {
-          const option = data.options?.find(
+          const query = data.options?.find(
             (option) => option.name === RulesCommand.options[0].name
           ) as APIApplicationCommandInteractionDataStringOption | undefined;
+          
+          const ruleTypeOption = data.options?.find(
+            (option) =>
+              option.type === ApplicationCommandOptionType.String &&
+              option.name === RulesCommand.options[1].name
+          ) as APIApplicationCommandInteractionDataStringOption | undefined;
+  
+          const ruleType =
+            ruleTypeOption?.value === "message"
+              ? RuleAutocompleteType.Message
+              : RuleAutocompleteType.User;
 
-          if (!option) {
+          if (!query) {
             return;
           }
 
-          const rule = rules.user.get(option.value);
+          const cache = ruleType === RuleAutocompleteType.Message ? rules.message : rules.user
+          const rule = cache.get(query.value)
+
           if (!rule) {
             return;
           }
