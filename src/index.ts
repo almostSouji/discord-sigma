@@ -183,7 +183,7 @@ client.on(GatewayDispatchEvents.MessageCreate, ({ data: message }) => {
         message.author.id
       )} ${inlineCode(message.author.username)} (${
         message.author.id
-      }) triggered configured rules on ${inlineCode("message_create")}:`,
+      }) triggered configured rules on ${inlineCode("message_create")}`,
       messageHits,
       message.guild_id
     );
