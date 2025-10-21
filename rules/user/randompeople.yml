@@ -1,0 +1,17 @@
+title: Generated Girls
+description: >-
+  This rule detects a set of suspicious accounts. They don't exhibit any suspicious behavior but are sometimes reposting a random message of a random user in the server.
+  The accounts in questions tend to have random girls as avatar (common themes: cosplay, beauty, influencer, model, asian), potentially AI generated.
+  We currently have no further information about the purpose of these bots.
+level: low
+status: experimental
+discord: user
+id: dc428fd9-ec0c-4d34-b680-c55931cb0ace
+date: 2025/10/21
+detection:
+  creation:
+    - id|snowflake(discord)|sameday: 2025/09/06
+    - id|snowflake(discord)|sameday: 2025/09/07
+  name:
+    username|re: ^[a-zA-Z0-9]{10,}$
+  condition: creation and name
