@@ -20,7 +20,7 @@ type PredicateEntry<T> = {
 export function colorBasedOnDeterminant<T>(
   determinant: T,
   stringExtractor: (a0: T) => string,
-  predicates: PredicateEntry<T>[]
+  predicates: PredicateEntry<T>[],
 ): string {
   const res = stringExtractor(determinant);
   for (const { color, predicate } of predicates) {

@@ -1,8 +1,8 @@
-import type { APIEmbed, APIEmbedField } from "@discordjs/core";
-import { truncate, truncateEmbed } from "@yuudachi/framework";
+import { EmbedType, type APIEmbed, type APIEmbedField } from "@discordjs/core";
 import type { Rule, RuleLevel } from "omega-rules";
 import { Colors } from "./constants.js";
 import { stringify } from "yaml";
+import { truncate, truncateEmbed } from "./truncate.js";
 
 function resolveRuleColor(level: RuleLevel = "informational") {
   switch (level) {
@@ -42,6 +42,7 @@ export function resolveRuleSeverityNumber(level: RuleLevel = "informational") {
 
 export function ruleToDiscordEmbed(rule: Rule): APIEmbed {
   const embed = {
+    type: EmbedType.Rich,
     title: rule.title,
     color: resolveRuleColor(rule.level),
   } as APIEmbed;

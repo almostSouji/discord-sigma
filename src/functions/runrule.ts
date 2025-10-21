@@ -17,9 +17,9 @@ import { colorBasedOnDifference } from "../util/ansicolors.js";
 import { timestampFromSnowflake } from "../util/snowflakes.js";
 import { ms } from "@naval-base/ms";
 import kleur from "kleur";
-import { truncate } from "@yuudachi/framework";
 import { kOmega } from "../util/symbols.js";
 import type { OmegaRuleCache } from "../util/rulemanager.js";
+import { truncate } from "../util/truncate.js";
 
 kleur.enabled = true;
 
@@ -40,7 +40,7 @@ export async function runruleAutocomplete(
   client: Client,
   interaction: APIApplicationCommandAutocompleteInteraction,
   query: string,
-  type: RuleAutocompleteType
+  type: RuleAutocompleteType,
 ) {
   const rules = container.resolve<OmegaRuleCache>(kOmega);
 
@@ -105,7 +105,7 @@ export async function runruleAutocomplete(
           })),
         },
       },
-    }
+    },
   );
 }
 
@@ -121,8 +121,8 @@ function evaluateSweep(map: Map<string, APIGuildMember>) {
 
   const members = [...map.values()];
   members.sort((one, other) => {
-    const joinedOne = new Date(one.joined_at);
-    const joinedOther = new Date(other.joined_at);
+    const joinedOne = new Date(one.joined_at ?? 0);
+    const joinedOther = new Date(other.joined_at ?? 0);
     return joinedOther.getTime() - joinedOne.getTime();
   });
 
@@ -132,7 +132,7 @@ function evaluateSweep(map: Map<string, APIGuildMember>) {
       continue;
     }
 
-    const joined = new Date(member.joined_at);
+    const joined = new Date(member.joined_at ?? 0);
     const created = new Date(timestampFromSnowflake(member.user.id));
     const delta = joined.getTime() - created.getTime();
 
@@ -143,14 +143,14 @@ function evaluateSweep(map: Map<string, APIGuildMember>) {
 
     formatted.push(
       `${kleur.grey(
-        ` ${String(lineNumber)}`.padStart(String(map.size).length + 1, " ")
+        ` ${String(lineNumber)}`.padStart(String(map.size).length + 1, " "),
       )}  ${member.user.id.padEnd(20, " ")} c: ${colorBasedOnDifference(
         now - created.getTime(),
-        created.toLocaleString("en-GB")
+        created.toLocaleString("en-GB"),
       )} j: ${joined.toLocaleString("en-GB")}  ${colorBasedOnDifference(
         delta,
-        `Δ: ${ms(delta).padEnd(5, " ")}`
-      )} u: ${member.user.username} g: ${member.user.global_name ?? "-"}`
+        `Δ: ${ms(delta).padEnd(5, " ")}`,
+      )} u: ${member.user.username} g: ${member.user.global_name ?? "-"}`,
     );
   }
 
@@ -165,7 +165,7 @@ export async function runRuleCommand(
   client: Client,
   interaction: APIApplicationCommandInteraction,
   rule: Rule,
-  hide: boolean
+  hide: boolean,
 ) {
   if (!interaction.guild_id) {
     return;
@@ -211,13 +211,13 @@ export async function runRuleCommand(
       if (formatted.length > 1) {
         const creationRangeString = ms(
           creationRange[1] - creationRange[0],
-          true
+          true,
         );
         const joinRangeString = ms(joinRange[1] - creationRange[0], true);
 
         resultSummaryParts.push(
           `* Matching members **created** within **${creationRangeString}**`,
-          `* Matching members **joined** within **${joinRangeString}**`
+          `* Matching members **joined** within **${joinRangeString}**`,
         );
       }
 
@@ -248,7 +248,7 @@ export async function runRuleCommand(
                 },
               ]
             : undefined,
-        }
+        },
       );
     }
   };

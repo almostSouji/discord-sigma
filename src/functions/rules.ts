@@ -10,7 +10,7 @@ export async function rulesCommand(
   client: Client,
   interaction: APIApplicationCommandInteraction,
   rule: Rule,
-  hide: boolean
+  hide: boolean,
 ) {
   await client.api.interactions.reply(interaction.id, interaction.token, {
     flags: hide ? MessageFlags.Ephemeral : undefined,

@@ -1,7 +1,7 @@
 import { Client, GatewayIntentBits } from "@discordjs/core";
 import { REST } from "@discordjs/rest";
 import { WebSocketManager, WebSocketShardEvents } from "@discordjs/ws";
-import { logger } from "@yuudachi/framework";
+import { logger } from "./util/logger.js";
 
 export type Options = {
   debug?: boolean;
@@ -12,7 +12,7 @@ export default class extends Client {
   public constructor(
     token: string,
     intents: GatewayIntentBits,
-    options?: Options
+    options?: Options,
   ) {
     const rest = new REST({ version: "10" }).setToken(token);
     const gateway = new WebSocketManager({

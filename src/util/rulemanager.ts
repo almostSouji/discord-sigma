@@ -87,7 +87,7 @@ export function parseOmegaRulePath(path: string) {
 
   if (!name || !suffix) {
     logger.debug(
-      `Unexpected file shape, expected name.suffix, received ${[name, suffix]}.`
+      `Unexpected file shape, expected name.suffix, received ${[name, suffix]}.`,
     );
     return null;
   }
@@ -122,12 +122,12 @@ export function getRulesByCategory(category: keyof OmegaRuleCache) {
  */
 export async function loadOmegaRule(
   path: string,
-  options: { throwOnInvalid: boolean }
+  options: { throwOnInvalid: boolean },
 ) {
   const parsedPath = parseOmegaRulePath(path);
   if (!parsedPath) {
     logger.debug(
-      `Could not parse ${path} path to valid omega rule path to load.`
+      `Could not parse ${path} path to valid omega rule path to load.`,
     );
     return false;
   }
@@ -140,7 +140,7 @@ export async function loadOmegaRule(
     const error = error_ as Error;
     logger.debug(
       error,
-      `Received error while trying to load omega rule ${path}`
+      `Received error while trying to load omega rule ${path}`,
     );
     return false;
   }

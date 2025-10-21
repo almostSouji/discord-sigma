@@ -42,8 +42,8 @@ import {
   resolveRuleEmoji,
   resolveRuleSeverityNumber,
 } from "./util/ruleformatting.js";
-import { truncate } from "@yuudachi/framework";
 import { DISCORD_MAX_MESSAGE_LENGTH } from "./util/constants.js";
+import { truncate } from "./util/truncate.js";
 
 const isDebugEnv = process.env.ENVIRONMENT === "debug";
 if (isDebugEnv) {
@@ -61,11 +61,11 @@ const omegaWatcher = createOmegaWatcher();
 
 await loadRulesInto(
   fileURLToPath(new URL("../rules/message/", import.meta.url)),
-  rules.message
+  rules.message,
 );
 await loadRulesInto(
   fileURLToPath(new URL("../rules/user/", import.meta.url)),
-  rules.user
+  rules.user,
 );
 
 const userCache = createUserFlagCaches();
@@ -78,7 +78,7 @@ const client = new Client(
     GatewayIntentBits.GuildMembers,
   {
     debug: isDebugEnv,
-  }
+  },
 );
 
 client.once(GatewayDispatchEvents.Ready, () => {
@@ -138,22 +138,22 @@ function webhookLogMessage(header: string, rules: Rule[], guildId: string) {
           .sort(
             (one, other) =>
               resolveRuleSeverityNumber(other.level) -
-              resolveRuleSeverityNumber(one.level)
+              resolveRuleSeverityNumber(one.level),
           )
           .map((rule) => {
             if (rule.id) {
               return `${inlineCode(resolveRuleEmoji(rule.level))} ${inlineCode(
-                rule.title
+                rule.title,
               )} (${inlineCode(rule.id)})`;
             }
             return inlineCode(rule.title);
           }),
         subtext(
-          "🛈 You can find out more about a rule by running </rules:1189350245176447007> with a part of the rule title or UUID"
+          "🛈 You can find out more about a rule by running </rules:1189350245176447007> with a part of the rule title or UUID",
         ),
       ].join("\n"),
       DISCORD_MAX_MESSAGE_LENGTH,
-      "\n"
+      "\n",
     ),
     flags: MessageFlags.SuppressEmbeds,
     allowed_mentions: { parse: [] },
@@ -166,7 +166,7 @@ function logUser(user: APIUser, rules: Rule[], guildId: string, event: string) {
       user.id
     }) triggered configured rules on ${inlineCode(event)}`,
     rules,
-    guildId
+    guildId,
   );
 }
 
@@ -180,12 +180,12 @@ client.on(GatewayDispatchEvents.MessageCreate, ({ data: message }) => {
   if (messageHits.length) {
     webhookLogMessage(
       `A ${hyperlink("message", link)} by author ${userMention(
-        message.author.id
+        message.author.id,
       )} ${inlineCode(message.author.username)} (${
         message.author.id
       }) triggered configured rules on ${inlineCode("message_create")}:`,
       messageHits,
-      message.guild_id
+      message.guild_id,
     );
   }
 
@@ -219,13 +219,13 @@ client.on(
       const data = interaction.data;
       if (data.type === ApplicationCommandType.ChatInput) {
         const hideOption = data.options?.find(
-          (option) => option.name === "hide"
+          (option) => option.name === "hide",
         ) as APIApplicationCommandInteractionDataBooleanOption | undefined;
         const hide = hideOption?.value ?? true;
 
         if (data.name === RunRuleCommand.name) {
           const option = data.options?.find(
-            (option) => option.name == RunRuleCommand.options[0].name
+            (option) => option.name == RunRuleCommand.options[0].name,
           ) as APIApplicationCommandInteractionDataStringOption | undefined;
 
           if (!option) {
@@ -242,15 +242,15 @@ client.on(
 
         if (data.name === RulesCommand.name) {
           const query = data.options?.find(
-            (option) => option.name === RulesCommand.options[0].name
+            (option) => option.name === RulesCommand.options[0].name,
           ) as APIApplicationCommandInteractionDataStringOption | undefined;
-          
+
           const ruleTypeOption = data.options?.find(
             (option) =>
               option.type === ApplicationCommandOptionType.String &&
-              option.name === RulesCommand.options[1].name
+              option.name === RulesCommand.options[1].name,
           ) as APIApplicationCommandInteractionDataStringOption | undefined;
-  
+
           const ruleType =
             ruleTypeOption?.value === "message"
               ? RuleAutocompleteType.Message
@@ -260,8 +260,11 @@ client.on(
             return;
           }
 
-          const cache = ruleType === RuleAutocompleteType.Message ? rules.message : rules.user
-          const rule = cache.get(query.value)
+          const cache =
+            ruleType === RuleAutocompleteType.Message
+              ? rules.message
+              : rules.user;
+          const rule = cache.get(query.value);
 
           if (!rule) {
             return;
@@ -276,7 +279,8 @@ client.on(
       const data = interaction.data;
       const focused = data.options.find(
         (option) =>
-          option.type === ApplicationCommandOptionType.String && option?.focused
+          option.type === ApplicationCommandOptionType.String &&
+          option?.focused,
       );
       if (!focused || focused.type !== ApplicationCommandOptionType.String) {
         return;
@@ -290,7 +294,7 @@ client.on(
           client,
           interaction,
           focused.value,
-          RuleAutocompleteType.User
+          RuleAutocompleteType.User,
         );
       }
 
@@ -301,7 +305,7 @@ client.on(
         const ruleTypeOption = data.options.find(
           (option) =>
             option.type === ApplicationCommandOptionType.String &&
-            option.name === RulesCommand.options[1].name
+            option.name === RulesCommand.options[1].name,
         ) as APIApplicationCommandInteractionDataStringOption | undefined;
 
         const ruleType =
@@ -313,19 +317,22 @@ client.on(
           client,
           interaction,
           focused.value,
-          ruleType
+          ruleType,
         );
       }
     }
-  }
+  },
 );
 
 omegaWatcher.on("create", async (path) => {
   try {
-    const success = await loadOmegaRule(path, { throwOnInvalid: true }).catch(
-      () => false
-    );
-    logger.info({ success, message: `[+] Loaded omega rule ${path}` });
+    const success = await loadOmegaRule(path, {
+      throwOnInvalid: true,
+    }).catch(() => false);
+    logger.info({
+      success,
+      message: `[+] Loaded omega rule ${path}`,
+    });
   } catch (error_) {
     const error = error_ as Error;
     logger.error(error, error.message);
@@ -334,12 +341,18 @@ omegaWatcher.on("create", async (path) => {
 
 omegaWatcher.on("change", async (path) => {
   try {
-    const success = await loadOmegaRule(path, { throwOnInvalid: true }).catch(
-      () => false
-    );
+    const success = await loadOmegaRule(path, {
+      throwOnInvalid: true,
+    }).catch((err) => {
+      console.log(err);
+      return false;
+    });
 
     if (success) {
-      logger.info({ success, message: `[~] Loaded omega rule ${path}` });
+      logger.info({
+        success,
+        message: `[~] Loaded omega rule ${path}`,
+      });
       return;
     }
 
@@ -357,7 +370,10 @@ omegaWatcher.on("change", async (path) => {
 omegaWatcher.on("unlink", (path) => {
   try {
     const success = unloadOmegaRule(path);
-    logger.info({ success, message: `[-] Unloaded omega rule ${path}` });
+    logger.info({
+      success,
+      message: `[-] Unloaded omega rule ${path} (unlink)`,
+    });
   } catch (error_) {
     const error = error_ as Error;
     logger.error(error, error.message);
