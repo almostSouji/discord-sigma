@@ -10,6 +10,7 @@ import {
   type APIUser,
   type APIMessage,
   MessageFlags,
+  InteractionResponseType,
 } from "@discordjs/core";
 import process from "process";
 import { default as Client } from "./client.js";
@@ -234,6 +235,19 @@ client.on(
 
           const rule = rules.user.get(option.value);
           if (!rule) {
+            await client.rest.post(
+              `/interactions/${interaction.id}/${interaction.token}/callback`,
+              {
+                body: {
+                  type: InteractionResponseType.ChannelMessageWithSource,
+                  data: {
+                    flags: MessageFlags.Ephemeral,
+                    content: `No rule found for ${inlineCode(option.value)}. Please make sure to select an existing rule.`,
+                  },
+                },
+              },
+            );
+
             return;
           }
 
@@ -267,6 +281,18 @@ client.on(
           const rule = cache.get(query.value);
 
           if (!rule) {
+            await client.rest.post(
+              `/interactions/${interaction.id}/${interaction.token}/callback`,
+              {
+                body: {
+                  type: InteractionResponseType.ChannelMessageWithSource,
+                  data: {
+                    flags: MessageFlags.Ephemeral,
+                    content: `No rule found for ${inlineCode(query.value)}. Please make sure to select an existing rule.`,
+                  },
+                },
+              },
+            );
             return;
           }
 
