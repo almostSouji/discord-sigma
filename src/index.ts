@@ -11,6 +11,8 @@ import {
   type APIMessage,
   MessageFlags,
   InteractionResponseType,
+  ComponentType,
+  ButtonStyle,
 } from "@discordjs/core";
 import process from "process";
 import { default as Client } from "./client.js";
@@ -45,6 +47,7 @@ import {
 } from "./util/ruleformatting.js";
 import { DISCORD_MAX_MESSAGE_LENGTH } from "./util/constants.js";
 import { truncate } from "./util/truncate.js";
+import { PolicyCommand } from "./deployment/interactions/policy.js";
 
 const isDebugEnv = process.env.ENVIRONMENT === "debug";
 if (isDebugEnv) {
@@ -74,9 +77,9 @@ const userCache = createUserFlagCaches();
 const client = new Client(
   token,
   GatewayIntentBits.Guilds |
-    GatewayIntentBits.GuildMessages |
-    GatewayIntentBits.MessageContent |
-    GatewayIntentBits.GuildMembers,
+  GatewayIntentBits.GuildMessages |
+  GatewayIntentBits.MessageContent |
+  GatewayIntentBits.GuildMembers,
   {
     debug: isDebugEnv,
   },
@@ -163,8 +166,7 @@ function webhookLogMessage(header: string, rules: Rule[], guildId: string) {
 
 function logUser(user: APIUser, rules: Rule[], guildId: string, event: string) {
   webhookLogMessage(
-    `User ${userMention(user.id)} ${inlineCode(user.username)} (${
-      user.id
+    `User ${userMention(user.id)} ${inlineCode(user.username)} (${user.id
     }) triggered configured rules on ${inlineCode(event)}`,
     rules,
     guildId,
@@ -182,8 +184,7 @@ client.on(GatewayDispatchEvents.MessageCreate, ({ data: message }) => {
     webhookLogMessage(
       `A ${hyperlink("message", link)} by author ${userMention(
         message.author.id,
-      )} ${inlineCode(message.author.username)} (${
-        message.author.id
+      )} ${inlineCode(message.author.username)} (${message.author.id
       }) triggered configured rules on ${inlineCode("message_create")}:`,
       messageHits,
       message.guild_id,
@@ -223,6 +224,41 @@ client.on(
           (option) => option.name === "hide",
         ) as APIApplicationCommandInteractionDataBooleanOption | undefined;
         const hide = hideOption?.value ?? true;
+
+        if (data.name === PolicyCommand.name) {
+          await client.rest.post(
+            `/interactions/${interaction.id}/${interaction.token}/callback`,
+            {
+              body: {
+                type: InteractionResponseType.ChannelMessageWithSource,
+                data: {
+                  flags:
+                    (hide ? MessageFlags.Ephemeral : 0) |
+                    MessageFlags.IsComponentsV2,
+                  components: [
+                    {
+                      type: ComponentType.Section,
+                      components: [
+                        {
+                          type: ComponentType.TextDisplay,
+                          content:
+                            "This app processes sensitive events against predefined patterns. This is the expressed, single purpose of this app and cannot be opted out of by individual users. Data is not retained outside of Discord channel alerts and on-demand debugging logs.",
+                        },
+                      ],
+                      accessory: {
+                        type: ComponentType.Button,
+                        style: ButtonStyle.Link,
+                        url: "https://github.com/almostSouji/discord-sigma/blob/main/PRIVACY.md",
+                        label: "Privacy Policy",
+                      },
+                    },
+                  ],
+                },
+              },
+            },
+          );
+          return;
+        }
 
         if (data.name === RunRuleCommand.name) {
           const option = data.options?.find(

@@ -3,12 +3,13 @@ import process from "node:process";
 import { REST } from "@discordjs/rest";
 import { RunRuleCommand } from "./interactions/runrule.js";
 import { RulesCommand } from "./interactions/rules.js";
+import { PolicyCommand } from "./interactions/policy.js";
 
 const rest = new REST({ version: "9" }).setToken(process.env.DISCORD_TOKEN!);
 
 try {
   await rest.put(`/applications/${process.env.DISCORD_CLIENT_ID}/commands`, {
-    body: [RunRuleCommand, RulesCommand],
+    body: [RunRuleCommand, RulesCommand, PolicyCommand],
   });
 
   console.log(`Successfully reloaded interaction commands`);
