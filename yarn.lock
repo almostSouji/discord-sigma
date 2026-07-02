@@ -222,45 +222,45 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@chevrotain/cst-dts-gen@npm:11.1.1":
-  version: 11.1.1
-  resolution: "@chevrotain/cst-dts-gen@npm:11.1.1"
+"@chevrotain/cst-dts-gen@npm:11.2.0":
+  version: 11.2.0
+  resolution: "@chevrotain/cst-dts-gen@npm:11.2.0"
   dependencies:
-    "@chevrotain/gast": "npm:11.1.1"
-    "@chevrotain/types": "npm:11.1.1"
+    "@chevrotain/gast": "npm:11.2.0"
+    "@chevrotain/types": "npm:11.2.0"
     lodash-es: "npm:4.17.23"
-  checksum: 10c0/31bdfadf2913529dec6f508aa33a3a8823eea2a75087a7a1283b76a787e62371f0b1fcb82a36be85cf01655bf62691f24d2c24b45aed22f13e5ffccf9c36a922
+  checksum: 10c0/a13238d0e05d9f8e057790f8587b2dc5df36ab60b6612f05207e3cbf8f3bbf966066abbf92bb4f9b7793bfa87e8710a00080b36cdfaaf2388a1d44f02e171632
   languageName: node
   linkType: hard
 
-"@chevrotain/gast@npm:11.1.1":
-  version: 11.1.1
-  resolution: "@chevrotain/gast@npm:11.1.1"
+"@chevrotain/gast@npm:11.2.0":
+  version: 11.2.0
+  resolution: "@chevrotain/gast@npm:11.2.0"
   dependencies:
-    "@chevrotain/types": "npm:11.1.1"
+    "@chevrotain/types": "npm:11.2.0"
     lodash-es: "npm:4.17.23"
-  checksum: 10c0/3a1f870bdc4a7dc349ae0c2e48f875e120c24f1fe076a095f3476ffb66de72b935fe083a7bf0669e624941527044ee2de7cc7020e35a4741d4ac66891d7053da
+  checksum: 10c0/15b19041d053f6bebaf2b0e010fb42c423fad7752d68ac8c36ba20816fb306f4918f3beba712b32bed65944d1bc161db1f8726f36f02d23171414a047977156e
   languageName: node
   linkType: hard
 
-"@chevrotain/regexp-to-ast@npm:11.1.1":
-  version: 11.1.1
-  resolution: "@chevrotain/regexp-to-ast@npm:11.1.1"
-  checksum: 10c0/56d6900848a621bd5ee0e6babff62389245b97374290ebdc3afcedf5ba199297b47601b1f908c1021790051414fbafeea81e437c98b92817561301ee5050b5b2
+"@chevrotain/regexp-to-ast@npm:11.2.0":
+  version: 11.2.0
+  resolution: "@chevrotain/regexp-to-ast@npm:11.2.0"
+  checksum: 10c0/eca45ea6d975afcaeec5c5a6645dfec34a481a1259458d08dfb22736cd0d11080db7fc82506895bf22f28413badaa4bc24a8a97e33f6904bc1a44e1d47405a13
   languageName: node
   linkType: hard
 
-"@chevrotain/types@npm:11.1.1":
-  version: 11.1.1
-  resolution: "@chevrotain/types@npm:11.1.1"
-  checksum: 10c0/7cc3692ed8dec7ff6251b583bfd9dea4f7e77f5a172b017e90fa40ab6cc7eef626ec66623228a553e61805aaf126d295941f05defaa22cdab46c2fbf908f66c3
+"@chevrotain/types@npm:11.2.0":
+  version: 11.2.0
+  resolution: "@chevrotain/types@npm:11.2.0"
+  checksum: 10c0/6f69a220b81e0a5e2a3ae458364eada3aaa1cfc015506f2a29d455912b1107fef5e70600ac78189a5394e9d5f5089b0523896cc8a87742697e97379ece109ec5
   languageName: node
   linkType: hard
 
-"@chevrotain/utils@npm:11.1.1":
-  version: 11.1.1
-  resolution: "@chevrotain/utils@npm:11.1.1"
-  checksum: 10c0/b862ba08bb6c6443a8316fcdc040ce940b61d06a15c746fb1cf63bc0e01e37b6976be4ec73285933c25201d2a17d2bfd65bf2a704de72320fc013e31e86fcedf
+"@chevrotain/utils@npm:11.2.0":
+  version: 11.2.0
+  resolution: "@chevrotain/utils@npm:11.2.0"
+  checksum: 10c0/6811c8fa0a517993512674ce69db1a6b26dcd82db9ba16a93005d2d4b015957532238d6781cba785d37f2f845837fd99f9ef16e1e257b7580f0f59f4f632de40
   languageName: node
   linkType: hard
 
@@ -1121,7 +1121,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@octokit/endpoint@npm:^11.0.2":
+"@octokit/endpoint@npm:^11.0.3":
   version: 11.0.3
   resolution: "@octokit/endpoint@npm:11.0.3"
   dependencies:
@@ -1257,15 +1257,16 @@ __metadata:
   linkType: hard
 
 "@octokit/request@npm:^10.0.6":
-  version: 10.0.7
-  resolution: "@octokit/request@npm:10.0.7"
+  version: 10.0.8
+  resolution: "@octokit/request@npm:10.0.8"
   dependencies:
-    "@octokit/endpoint": "npm:^11.0.2"
+    "@octokit/endpoint": "npm:^11.0.3"
     "@octokit/request-error": "npm:^7.0.2"
     "@octokit/types": "npm:^16.0.0"
     fast-content-type-parse: "npm:^3.0.0"
+    json-with-bigint: "npm:^3.5.3"
     universal-user-agent: "npm:^7.0.2"
-  checksum: 10c0/f789a75bf681b204ccd3d538921db662e148ed980005158d80ec4f16811e9ab73f375d4f30ef697852abd748a62f025060ea1b0c5198ec9c2e8d04e355064390
+  checksum: 10c0/7ee384dbeb489d4e00856eeaaf6a70060c61b036919c539809c3288e2ba14b8f3f63a5b16b8d5b7fdc93d7b6fa5c45bc3d181a712031279f6e192f019e52d7fe
   languageName: node
   linkType: hard
 
@@ -2709,16 +2710,16 @@ __metadata:
   linkType: hard
 
 "chevrotain@npm:^11.1.1":
-  version: 11.1.1
-  resolution: "chevrotain@npm:11.1.1"
+  version: 11.2.0
+  resolution: "chevrotain@npm:11.2.0"
   dependencies:
-    "@chevrotain/cst-dts-gen": "npm:11.1.1"
-    "@chevrotain/gast": "npm:11.1.1"
-    "@chevrotain/regexp-to-ast": "npm:11.1.1"
-    "@chevrotain/types": "npm:11.1.1"
-    "@chevrotain/utils": "npm:11.1.1"
+    "@chevrotain/cst-dts-gen": "npm:11.2.0"
+    "@chevrotain/gast": "npm:11.2.0"
+    "@chevrotain/regexp-to-ast": "npm:11.2.0"
+    "@chevrotain/types": "npm:11.2.0"
+    "@chevrotain/utils": "npm:11.2.0"
     lodash-es: "npm:4.17.23"
-  checksum: 10c0/cfd1a1206b0df75f2a08e40a39b1e2c69c1652495641b090fc25dcfae6c267ddb659f3a7d00e926d643d64f245636f89473609e7133f8157c5fd999007c9c555
+  checksum: 10c0/247cb0061d35ba18e3ac87a021124882907f45f950255bb51262af46b8bb808233b292c2788455f771f2867d6a4309f16a08cfc497fbb3d164e1289486d10899
   languageName: node
   linkType: hard
 
@@ -3195,7 +3196,7 @@ __metadata:
     eslint-config-neon: "npm:0.1.35"
     husky: "npm:^9.1.7"
     kleur: "npm:^4.1.5"
-    omega-rules: "npm:^0.4.5"
+    omega-rules: "npm:^0.4.6"
     pino: "npm:^9.6.0"
     prettier: "npm:^3.6.2"
     reflect-metadata: "npm:^0.2.2"
@@ -5421,6 +5422,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"json-with-bigint@npm:^3.5.3":
+  version: 3.5.7
+  resolution: "json-with-bigint@npm:3.5.7"
+  checksum: 10c0/69f27b712ac113aec2cac0933d81f37a3d6f5f0947543805cf5c6699c19ed14a79515d9aa2f78fde54ffdd7d9105790443408322f23add2a69096e741e176876
+  languageName: node
+  linkType: hard
+
 "jsonparse@npm:^1.2.0":
   version: 1.3.1
   resolution: "jsonparse@npm:1.3.1"
@@ -6261,16 +6269,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"omega-rules@npm:^0.4.5":
-  version: 0.4.5
-  resolution: "omega-rules@npm:0.4.5"
+"omega-rules@npm:^0.4.6":
+  version: 0.4.6
+  resolution: "omega-rules@npm:0.4.6"
   dependencies:
     chevrotain: "npm:^11.1.1"
     octokit: "npm:^5.0.5"
     re2: "npm:^1.23.3"
     readdirp: "npm:^4.0.2"
     yaml: "npm:^2.6.1"
-  checksum: 10c0/e812cbc485086820749e22a8287955b031548302d2f8f96083a6aa46d143c822700cccf987aeb623a6d69b00cba3d200a123ed98c85818d99ed49b60c9c74d76
+  checksum: 10c0/b34f2af5adfb652eec666c64980878e6f3ee34ee7e770f623bf12df40055e4c3f58cf2788a826d1ac8a7760cd13ce8acc79d7aadfebe5570b0cbaaeeffe8a55f
   languageName: node
   linkType: hard
 

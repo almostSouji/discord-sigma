@@ -27,6 +27,6 @@ This data will be deleted after the associated debugging procedure has been comp
 Other than this, data is not retained outside of Discord.
 The app does not keep databases of any kind that include user data.
 
-If data is submitted to the app in form of commands or modal submissiong, it may be used to publish rules to this or other rule repositories or review venues in the future.
-This functionality will clearly communicate this to the user.
+If data is submitted to the app in form of commands or modal submissions, it may be used to publish rules to this or other rule repositories or review venues in the future.
+In case of publishing, this will be clearly stated or obvious from the submission procedure.
 
