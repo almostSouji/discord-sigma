@@ -13,6 +13,7 @@ import {
   InteractionResponseType,
   ComponentType,
   ButtonStyle,
+  type GatewayPresenceUpdate,
 } from "@discordjs/core";
 import process from "process";
 import { default as Client } from "./client.js";
@@ -71,6 +72,10 @@ await loadRulesInto(
   fileURLToPath(new URL("../rules/user/", import.meta.url)),
   rules.user,
 );
+await loadRulesInto(
+  fileURLToPath(new URL("../rules/presence/", import.meta.url)),
+  rules.presence,
+);
 
 const userCache = createUserFlagCaches();
 
@@ -80,6 +85,7 @@ const client = new Client(
   GatewayIntentBits.GuildMessages |
   GatewayIntentBits.MessageContent |
   GatewayIntentBits.GuildMembers,
+  // GatewayIntentBits.GuildPresences
   {
     debug: isDebugEnv,
   },
@@ -91,7 +97,9 @@ client.once(GatewayDispatchEvents.Ready, () => {
   logger.info(`Loaded ${rules.message.size} message rules`);
 });
 
-function evaluateUser(user: APIUser, guildId: string): Rule[] {
+function evaluateUser(user: Partial<APIUser>, guildId: string): Rule[] {
+  if (!user.id) return [];
+
   const guildHits = userCache.get(guildId);
   if (guildHits?.has(user.id)) {
     return [];
@@ -110,6 +118,34 @@ function evaluateUser(user: APIUser, guildId: string): Rule[] {
       guildHits.add(user.id);
     } else {
       userCache.set(guildId, new Set([user.id]));
+    }
+  }
+
+  return hits;
+}
+
+function evluatePresence(presence: GatewayPresenceUpdate): Rule[] {
+  if (!presence.guild_id) return [];
+
+  const guildHits = userCache.get(presence.guild_id);
+  if (guildHits?.has(presence.user.id)) {
+    return [];
+  }
+
+  const hits = [];
+
+  for (const rule of rules.presence.values()) {
+    const result = evaluateOmega(presence, rule);
+    if (result.matches && result.rule.level !== "informational") {
+      hits.push(rule);
+    }
+  }
+
+  if (hits.length) {
+    if (guildHits) {
+      guildHits.add(presence.user.id);
+    } else {
+      userCache.set(presence.guild_id, new Set([presence.user.id]));
     }
   }
 
@@ -164,7 +200,13 @@ function webhookLogMessage(header: string, rules: Rule[], guildId: string) {
   });
 }
 
-function logUser(user: APIUser, rules: Rule[], guildId: string, event: string) {
+function logUser(
+  user: Partial<APIUser>,
+  rules: Rule[],
+  guildId: string,
+  event: string,
+) {
+  if (!user.id || !user.username) return;
   webhookLogMessage(
     `User ${userMention(user.id)} ${inlineCode(user.username)} (${user.id
     }) triggered configured rules on ${inlineCode(event)}`,
@@ -211,6 +253,20 @@ client.on(GatewayDispatchEvents.GuildMemberUpdate, ({ data: member }) => {
   const userHits = evaluateUser(member.user, member.guild_id);
   if (userHits.length) {
     logUser(member.user, userHits, member.guild_id, "guild_member_update");
+  }
+});
+
+client.on(GatewayDispatchEvents.PresenceUpdate, ({ data: presence }) => {
+  if (!presence.guild_id) return;
+  const userHits = evaluateUser(presence.user, presence.guild_id);
+  const presenceHits = evluatePresence(presence);
+
+  if (userHits.length) {
+    logUser(presence.user, userHits, presence.guild_id, "presence_update");
+  }
+
+  if (presenceHits.length) {
+    logUser(presence.user, presenceHits, presence.guild_id, "presence_update");
   }
 });
 

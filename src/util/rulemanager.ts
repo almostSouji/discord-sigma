@@ -8,6 +8,7 @@ import { kOmega, kOmegaWatcher } from "./symbols.js";
 export type OmegaRuleCache = {
   message: RuleCache;
   user: RuleCache;
+  presence: RuleCache;
 };
 
 /**
@@ -18,6 +19,7 @@ export function createOmega() {
   const caches = {
     user: new Map<string, Rule>(),
     message: new Map<string, Rule>(),
+    presence: new Map<string, Rule>(),
   } as OmegaRuleCache;
 
   container.register(kOmega, {
@@ -38,7 +40,7 @@ export function getOmegaRules() {
 export const omegaRootURL = new URL("../../rules", import.meta.url);
 
 /**
- * Regiser omega rule file watcher singleton
+ * Register omega rule file watcher singleton
  * @returns The registered file watcher
  */
 export function createOmegaWatcher() {
